@@ -16,16 +16,18 @@ public class OrderController {
     @SendTo("/topic/public")
     public OrderMessage sendOrder(@Payload OrderMessage orderMessage) {
         logger.info(orderMessage.toString());
+
         return orderMessage;
     }
 
     @MessageMapping("/order.findingDriver")
     @SendTo("/topic/public")
-    public OrderMessage addUser(@Payload OrderMessage orderMessage,
+    public OrderMessage findingDriver(@Payload OrderMessage orderMessage,
                                SimpMessageHeaderAccessor headerAccessor) {
         // Add username in web socket session
-        headerAccessor.getSessionAttributes().put("cusName", orderMessage.getCusName());
+        headerAccessor.getSessionAttributes().put("username", orderMessage.getCusName());
         logger.info(orderMessage.toString());
         return orderMessage;
     }
+
 }
