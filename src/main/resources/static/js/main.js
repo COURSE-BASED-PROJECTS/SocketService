@@ -1,12 +1,14 @@
-'use strict';
+// 'use strict';
 
 var usernamePage = document.querySelector('#username-page');
 var chatPage = document.querySelector('#chat-page');
 var usernameForm = document.querySelector('#usernameForm');
 var messageForm = document.querySelector('#messageForm');
 var messageInput = document.querySelector('#message');
+var driverIDInput = document.querySelector('#driver');
 var messageArea = document.querySelector('#messageArea');
 var connectingElement = document.querySelector('.connecting');
+
 
 var stompClient = null;
 var username = null;
@@ -31,6 +33,13 @@ function connect(event) {
     event.preventDefault();
 }
 
+function openConnectionGPS(event) {
+    var socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, onConnectedGPS(), onError);
+}
+
 
 function onConnected(options) {
     // Subscribe to the Public Topic
@@ -43,6 +52,12 @@ function onConnected(options) {
     )
 
     connectingElement.classList.add('hidden');
+}
+
+function onConnectedGPS() {
+    // Subscribe to the Public Topic
+    alert("Connect Successfully!!!")
+    stompClient.subscribe('/topic/public', onMessageReceived);
 }
 
 
@@ -66,6 +81,20 @@ function sendMessage(event) {
     event.preventDefault();
 }
 
+function sendMessageGPS() {
+    var driverID = driverIDInput.value.trim();
+    if(driverID && stompClient) {
+        var GPS = {
+            driverIdentification: "12345678",
+            driverID,
+            latitude: "1111",
+            longitude:"2222",
+            type: "GPS"
+        };
+        stompClient.send("/app/gps.getGps", {}, JSON.stringify(GPS));
+        driverIDInput.value = '';
+    }
+}
 
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
@@ -116,3 +145,6 @@ function getAvatarColor(messageSender) {
 
 usernameForm.addEventListener('submit', connect, true)
 messageForm.addEventListener('submit', sendMessage, true)
+
+document.getElementById("connectGPS").addEventListener("click", openConnectionGPS);
+document.getElementById("sendGPS").addEventListener("click", sendMessageGPS);
