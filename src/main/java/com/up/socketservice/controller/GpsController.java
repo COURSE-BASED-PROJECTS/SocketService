@@ -14,19 +14,20 @@ import java.util.Map;
 
 @Controller
 public class GpsController {
-    private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
+    private static final Logger logger = LoggerFactory.getLogger(GpsController.class);
 
-    Map<String, GpsMeassage> map = new HashMap<String, GpsMeassage>();
+    public static Map<String, GpsMeassage> map = new HashMap<String, GpsMeassage>();
     @MessageMapping("/gps.getGps")
     @SendTo("/topic/public")
     public GpsMeassage getGps(@Payload GpsMeassage gpsMeassage) {
         // Test chổ này xem có lưu lại được runtime tọa độ tài xế vô ko?
         map.put(gpsMeassage.getDriverID(), gpsMeassage);
 
+        logger.info(gpsMeassage.toString());
+        System.out.println("Danh sách GPS tài xế:");
         for (Map.Entry<String, GpsMeassage> entry : map.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue().toString());
         }
-        logger.info(gpsMeassage.toString());
         return gpsMeassage;
     }
 }

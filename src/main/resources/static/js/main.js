@@ -87,8 +87,8 @@ function sendMessageGPS() {
         var GPS = {
             driverIdentification: "12345678",
             driverID,
-            latitude: "1111",
-            longitude:"2222",
+            latitude: (Math.floor(Math.random() * 41) + 10) +'',
+            longitude:(Math.floor(Math.random() * 200) + 106) +'',
             type: "GPS"
         };
         stompClient.send("/app/gps.getGps", {}, JSON.stringify(GPS));
