@@ -24,7 +24,6 @@ public class OrderController {
     public static Map<String, CommonPackage> mapPackage = new HashMap<String, CommonPackage>();
     public static Map<String, List<DriverDistance>> mapDistance = new HashMap<String, List<DriverDistance>>();
     @MessageMapping("/order.getOrder")
-    @SendTo("/topic/public")
     public void getOrder(@Payload CommonPackage commonPackage) {
         logger.info(commonPackage.toString());
         mapPackage.put(commonPackage.idClient, commonPackage);
@@ -45,6 +44,7 @@ public class OrderController {
         JsonDistance data = CalUtil.GoogleMapDistance(locationClient, locationDriver);
         System.out.println(data);
         int i = 0;
+
         List<DriverDistance> listDriverDistance = new ArrayList<>();
         for (Map.Entry<String, GpsMeassage> entry : mapDriver.entrySet()) {
             String idDriver = entry.getValue().getDriverID();
