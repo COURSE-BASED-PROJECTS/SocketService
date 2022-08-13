@@ -29,8 +29,8 @@ public class OrderController {
     public static Map<String, List<DriverDistance>> mapDistance = new HashMap<String, List<DriverDistance>>();
 
     @MessageMapping("/order.getOrder")
-    @SendTo("/topic/public")
-    public CommonPackage getOrder(@Payload CommonPackage commonPackage) {
+//    @SendTo("/topic/public")
+    public void getOrder(@Payload CommonPackage commonPackage) {
         logger.info(commonPackage.toString());
         mapPackage.put(commonPackage.idClient, commonPackage);
 
@@ -77,8 +77,8 @@ public class OrderController {
             }
         }
         System.out.println(commonPackage.toString());
-        messagingTemplate.convertAndSend("/topic/public", "chatMessage");
-        return commonPackage;
+        messagingTemplate.convertAndSend("/topic/1", commonPackage);
+//        return commonPackage;
     }
 
 

@@ -37,7 +37,7 @@ function openConnectionGPS(event) {
     var socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
 
-    stompClient.connect({}, onConnectedGPS(), onError);
+    stompClient.connect({}, onConnectedGPS, onError);
 }
 
 
@@ -58,6 +58,12 @@ function onConnectedGPS() {
     // Subscribe to the Public Topic
     alert("Connect Successfully!!!")
     stompClient.subscribe('/topic/public', onMessageReceived);
+    stompClient.subscribe('/topic/1', onMessageReceivedTest);
+}
+
+function onMessageReceivedTest(payload){
+    const message = JSON.parse(payload.body)
+    console.log(message)
 }
 
 
