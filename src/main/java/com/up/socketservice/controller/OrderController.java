@@ -26,10 +26,13 @@ public class OrderController {
         Map<String, GpsMeassage> mapDriver = GpsController.mapDriver;
         String locationDriver = "";
         for (Map.Entry<String, GpsMeassage> entry : mapDriver.entrySet()) {
-            locationDriver += entry.getValue().toString() + "|";
+            locationDriver += entry.getValue().getStringLatLong() + "|";
         }
         String locationClient = commonPackage.hailing.locationStart.latitude + "," + commonPackage.hailing.locationStart.longitude;
+        StringBuilder sb = new StringBuilder(locationDriver);
+        locationDriver = sb.deleteCharAt(sb.length() - 1).toString();
 
+        System.out.println("");
         System.out.println(locationDriver);
         System.out.println(locationClient);
 

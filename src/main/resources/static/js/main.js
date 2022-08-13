@@ -83,15 +83,55 @@ function sendMessage(event) {
 
 function sendMessageGPS() {
     var driverID = driverIDInput.value.trim();
+    const pos = [{
+        latitude: 10.825005,
+        longitude: 106.760088
+    },{
+        latitude: 10.786818,
+        longitude: 106.749161
+    }
+    ]
+
     if(driverID && stompClient) {
         var GPS = {
             driverIdentification: "12345678",
             driverID,
-            latitude: (Math.floor(Math.random() * 41) + 10) +'',
-            longitude:(Math.floor(Math.random() * 200) + 106) +'',
+            latitude: pos[(Math.floor(Math.random() * 2))].latitude + '',
+            longitude:pos[(Math.floor(Math.random() * 2))].longitude + '',
             type: "GPS"
         };
         stompClient.send("/app/gps.getGps", {}, JSON.stringify(GPS));
+        driverIDInput.value = '';
+    }
+}
+
+function order() {
+    if(stompClient) {
+        var order = {
+            idHailing: (Math.floor(Math.random() * 41) + 10) +'',
+            idDriver: null,
+            idClient: (Math.floor(Math.random() * 41) + 10) +'',
+            hailing: {
+                locationStart:{
+                    latitude: 10.7628356,
+                    longitude: 106.6802937,
+                    name: "start",
+                },
+                locationEnd:{
+                    latitude: 10.8507214,
+                    longitude: 106.7697336,
+                    name: "end",
+                },
+                distance: 3000,
+                timeDuring: 10000,
+                timeStart: null,
+                cost: 0,
+                carType: 2
+            },
+            status: "test",
+            scope: []
+        };
+        stompClient.send("/app/order.getOrder", {}, JSON.stringify(order));
         driverIDInput.value = '';
     }
 }
@@ -148,3 +188,4 @@ messageForm.addEventListener('submit', sendMessage, true)
 
 document.getElementById("connectGPS").addEventListener("click", openConnectionGPS);
 document.getElementById("sendGPS").addEventListener("click", sendMessageGPS);
+document.getElementById("order").addEventListener("click", order);
