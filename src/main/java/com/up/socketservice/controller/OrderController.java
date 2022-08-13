@@ -5,6 +5,7 @@ import com.up.socketservice.model.DriverDistance;
 import com.up.socketservice.model.GpsMeassage;
 import com.up.socketservice.model.JsonDistance;
 import com.up.socketservice.utils.CalUtil;
+import com.up.socketservice.utils.FindUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,16 +70,14 @@ public class OrderController {
 
         List<DriverDistance> dd = mapDistance.get(commonPackage.idHailing);
 
-        int minDistance = Integer.MAX_VALUE;
-        for (int j = 0; j < dd.size(); j++) {
-            if (dd.get(j).distance < minDistance) {
-                minDistance = dd.get(j).distance;
-                commonPackage.idDriver = dd.get(j).idDriver;
-            }
-        }
-        System.out.println(commonPackage.toString());
+        DriverDistance temp = FindUtil.findSuitableDriverId(dd);
+        commonPackage.idDriver = temp.idDriver;
         commonPackage.status = "waiting";
+        System.out.println(commonPackage.toString());
+
         // remove selected driver
+        mapDistance.get(commonPackage.idHailing).remove(temp);
+
         messagingTemplate.convertAndSend("/topic/"+commonPackage.idDriver, commonPackage);
 //        return commonPackage;
     }
