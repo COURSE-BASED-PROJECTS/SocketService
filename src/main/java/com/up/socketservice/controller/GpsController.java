@@ -1,6 +1,7 @@
 package com.up.socketservice.controller;
 
 import com.up.socketservice.model.GpsMeassage;
+import com.up.socketservice.utils.CalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -16,18 +17,16 @@ import java.util.Map;
 public class GpsController {
     private static final Logger logger = LoggerFactory.getLogger(GpsController.class);
 
-    public static Map<String, GpsMeassage> map = new HashMap<String, GpsMeassage>();
+    public static Map<String, GpsMeassage> mapDriver = new HashMap<String, GpsMeassage>();
     @MessageMapping("/gps.getGps")
     @SendTo("/topic/public")
     public GpsMeassage getGps(@Payload GpsMeassage gpsMeassage) {
-        // Test chổ này xem có lưu lại được runtime tọa độ tài xế vô ko?
-        map.put(gpsMeassage.getDriverID(), gpsMeassage);
+
+        mapDriver.put(gpsMeassage.getDriverID(), gpsMeassage);
 
         logger.info(gpsMeassage.toString());
-        System.out.println("Danh sách GPS tài xế:");
-        for (Map.Entry<String, GpsMeassage> entry : map.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue().toString());
-        }
+
+        //System.out.println(CalUtil.GoogleMapDistance(null, null).toString());
         return gpsMeassage;
     }
 }

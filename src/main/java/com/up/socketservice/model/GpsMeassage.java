@@ -61,4 +61,8 @@ public class GpsMeassage {
                 ", type='" + type + '\'' +
                 '}';
     }
+
+    public String getStringLatLong() {
+        return latitude + "," + longitude;
+    }
 }
