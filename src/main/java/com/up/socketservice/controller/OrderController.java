@@ -77,7 +77,9 @@ public class OrderController {
             }
         }
         System.out.println(commonPackage.toString());
-        messagingTemplate.convertAndSend("/topic/1", commonPackage);
+        commonPackage.status = "waiting";
+        // remove selected driver
+        messagingTemplate.convertAndSend("/topic/"+commonPackage.idDriver, commonPackage);
 //        return commonPackage;
     }
 
