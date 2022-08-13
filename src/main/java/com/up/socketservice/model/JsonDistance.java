@@ -13,6 +13,10 @@ public class JsonDistance{
                 "rows=" + rows.toString() +
                 '}';
     }
+
+    public int getDistance(int i) {
+        return rows.get(0).elements.get(i).distance.value;
+    }
 }
 class Distance{
     public String text;
@@ -65,4 +69,9 @@ class Row{
                 "elements=" + elements.toString() +
                 '}';
     }
+
+    public ArrayList<Element> getElements() {
+        return elements;
+    }
 }
+

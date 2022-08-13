@@ -106,6 +106,7 @@ function sendMessageGPS() {
 }
 
 function order() {
+    alert("aaa");
     if(stompClient) {
         var order = {
             idHailing: (Math.floor(Math.random() * 41) + 10) +'',

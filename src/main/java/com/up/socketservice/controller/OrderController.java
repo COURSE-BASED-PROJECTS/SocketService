@@ -1,15 +1,20 @@
 package com.up.socketservice.controller;
 
 import com.up.socketservice.model.CommonPackage;
+import com.up.socketservice.model.DriverDistance;
 import com.up.socketservice.model.GpsMeassage;
+import com.up.socketservice.model.JsonDistance;
 import com.up.socketservice.utils.CalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -17,8 +22,9 @@ import java.util.Map;
 public class OrderController {
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
     public static Map<String, CommonPackage> mapPackage = new HashMap<String, CommonPackage>();
+    public static Map<String, List<DriverDistance>> mapDistance = new HashMap<String, List<DriverDistance>>();
     @MessageMapping("/order.getOrder")
-    //@SendTo("/topic/public")
+    @SendTo("/topic/public")
     public void getOrder(@Payload CommonPackage commonPackage) {
         logger.info(commonPackage.toString());
         mapPackage.put(commonPackage.idClient, commonPackage);
@@ -36,8 +42,24 @@ public class OrderController {
         System.out.println(locationDriver);
         System.out.println(locationClient);
 
-        System.out.println(CalUtil.GoogleMapDistance(locationClient,locationDriver));
+        JsonDistance data = CalUtil.GoogleMapDistance(locationClient, locationDriver);
+        System.out.println(data);
+        int i = 0;
+        List<DriverDistance> listDriverDistance = new ArrayList<>();
+        for (Map.Entry<String, GpsMeassage> entry : mapDriver.entrySet()) {
+            String idDriver = entry.getValue().getDriverID();
+            int distance = data.getDistance(i++);
+            DriverDistance dd = new DriverDistance(idDriver, distance);
+            listDriverDistance.add(dd);
+        }
 
+        mapDistance.put(commonPackage.idHailing, listDriverDistance);
+        for (Map.Entry<String, List<DriverDistance>> entry : mapDistance.entrySet()) {
+            System.out.println(entry.getKey() + ":");
+            for (int j = 0; j < entry.getValue().size(); j++) {
+                System.out.println(entry.getValue().get(j).toString());
+            }
+        }
     }
 
 
