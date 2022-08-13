@@ -7,9 +7,11 @@ import com.up.socketservice.model.JsonDistance;
 import com.up.socketservice.utils.CalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
@@ -20,11 +22,15 @@ import java.util.Map;
 
 @Controller
 public class OrderController {
+    @Autowired
+    private SimpMessageSendingOperations messagingTemplate;
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
     public static Map<String, CommonPackage> mapPackage = new HashMap<String, CommonPackage>();
     public static Map<String, List<DriverDistance>> mapDistance = new HashMap<String, List<DriverDistance>>();
+
     @MessageMapping("/order.getOrder")
-    public void getOrder(@Payload CommonPackage commonPackage) {
+    @SendTo("/topic/public")
+    public CommonPackage getOrder(@Payload CommonPackage commonPackage) {
         logger.info(commonPackage.toString());
         mapPackage.put(commonPackage.idClient, commonPackage);
 
@@ -60,8 +66,20 @@ public class OrderController {
                 System.out.println(entry.getValue().get(j).toString());
             }
         }
-    }
 
+        List<DriverDistance> dd = mapDistance.get(commonPackage.idHailing);
+
+        int minDistance = Integer.MAX_VALUE;
+        for (int j = 0; j < dd.size(); j++) {
+            if (dd.get(j).distance < minDistance) {
+                minDistance = dd.get(j).distance;
+                commonPackage.idDriver = dd.get(j).idDriver;
+            }
+        }
+        System.out.println(commonPackage.toString());
+        messagingTemplate.convertAndSend("/topic/public", "chatMessage");
+        return commonPackage;
+    }
 
 
 }
