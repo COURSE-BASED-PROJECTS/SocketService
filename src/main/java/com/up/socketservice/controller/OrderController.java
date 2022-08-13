@@ -13,7 +13,7 @@ import org.springframework.stereotype.Controller;
 public class OrderController {
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
-    @MessageMapping("/order")
+    @MessageMapping("/order.getOrder")
     //@SendTo("/topic/public")
     public void getOrder(@Payload CommonPackage commonPackage) {
         logger.info(commonPackage.toString());

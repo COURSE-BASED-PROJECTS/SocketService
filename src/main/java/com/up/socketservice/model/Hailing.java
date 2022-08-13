@@ -6,12 +6,12 @@ public class Hailing {
     public Location locationStart;
     public Location locationEnd;
     public Double distance;
-    public LocalDateTime timeDuring;
+    public long timeDuring;
     public LocalDateTime timeStart;
     public Double cost;
     public int carType;
 
-    public Hailing(Location locationStart, Location locationEnd, Double distance, LocalDateTime timeDuring, LocalDateTime timeStart, Double cost, int carType) {
+    public Hailing(Location locationStart, Location locationEnd, Double distance, long timeDuring, LocalDateTime timeStart, Double cost, int carType) {
         this.locationStart = locationStart;
         this.locationEnd = locationEnd;
         this.distance = distance;
