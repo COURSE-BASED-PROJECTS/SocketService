@@ -1,6 +1,6 @@
-package com.up.socketservice.model;
+package com.up.socketservice.model.server.gps;
 
-public class GpsMeassage {
+public class GpsPackage {
     public String driverIdentification;
 
     public String driverID;

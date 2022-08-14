@@ -1,4 +1,4 @@
-package com.up.socketservice.model;
+package com.up.socketservice.model.hailing;
 
 public class Location {
     public double latitude,longitude;

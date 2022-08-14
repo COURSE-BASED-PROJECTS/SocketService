@@ -1,5 +1,7 @@
 package com.up.socketservice.model;
 
+import com.up.socketservice.model.hailing.Location;
+
 import java.time.LocalDateTime;
 
 public class Hailing {

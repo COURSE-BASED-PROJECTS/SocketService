@@ -63,6 +63,7 @@ function onConnectedGPS() {
 
 function onMessageReceivedTest(payload){
     const message = JSON.parse(payload.body)
+
     console.log(message)
 }
 

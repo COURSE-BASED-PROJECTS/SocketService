@@ -1,13 +1,10 @@
 package com.up.socketservice.utils;
 
 import com.up.socketservice.model.JsonDistance;
-import com.up.socketservice.model.Location;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CalUtil {
