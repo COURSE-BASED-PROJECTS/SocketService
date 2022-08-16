@@ -23,50 +23,32 @@ public class FindingDriverPackage extends HandlePackage {
 
     @Override
     public void handle(CommonPackage commonPackage) {
-        Map<String, GpsPackage> mapDriver = ServerGPS.mapDriver;
 
-        String locationDriver = "";
-        for (Map.Entry<String, GpsPackage> entry : mapDriver.entrySet()) {
-            locationDriver += entry.getValue().getStringLatLong() + "|";
-        }
-        StringBuilder sb = new StringBuilder(locationDriver);
-        locationDriver = sb.deleteCharAt(sb.length() - 1).toString();
-
-        String locationClient = commonPackage.getHailing().getLocationStart().latitude + ","
-                + commonPackage.getHailing().getLocationEnd().longitude;
-
-        JsonDistance data = CalUtil.GoogleMapDistance(locationClient, locationDriver);
-        int i = 0;
-
-        List<DriverDistance> listDriverDistance = new ArrayList<>();
-        for (Map.Entry<String, GpsPackage> entry : mapDriver.entrySet()) {
-            String idDriver = entry.getValue().getDriverID();
-            int distance = data.getDistance(i++);
-            DriverDistance dd = new DriverDistance(idDriver, distance);
-            listDriverDistance.add(dd);
+        List<DriverDistance> listDriverDistance = CalUtil.GoogleMapDistance(commonPackage.getHailing());
+        if (listDriverDistance.isEmpty()) {
+            System.out.println("Không tìm được tài xế!");
+            return;
         }
 
         mapDistance.put(commonPackage.getIdHailing(), listDriverDistance);
-        for (Map.Entry<String, List<DriverDistance>> entry : mapDistance.entrySet()) {
-            System.out.println(entry.getKey() + ":");
-            for (int j = 0; j < entry.getValue().size(); j++) {
-                System.out.println(entry.getValue().get(j).toString());
-            }
-        }
 
-        List<DriverDistance> dd = mapDistance.get(commonPackage.getIdHailing());
-        System.out.println(dd);
+//        for (Map.Entry<String, List<DriverDistance>> entry : mapDistance.entrySet()) {
+//            System.out.println(entry.getKey() + ":");
+//            for (int j = 0; j < entry.getValue().size(); j++) {
+//                System.out.println(entry.getValue().get(j).toString());
+//            }
+//        }
+        //System.out.println(dd);
 
-
-        DriverDistance temp = FindUtil.findSuitableDriverId(dd);
-        System.out.println(temp.getIdDriver());
+        DriverDistance temp = FindUtil.findSuitableDriverId(listDriverDistance);
+        //System.out.println(temp.getIdDriver());
         commonPackage.setIdDriver(temp.getIdDriver());
         commonPackage.setStatus("waiting");
 
         // remove selected driver
         mapDistance.get(commonPackage.getIdHailing()).remove(temp);
 
-        System.out.println(commonPackage.toString());
+        //System.out.println(commonPackage.toString());
     }
 
     @Override

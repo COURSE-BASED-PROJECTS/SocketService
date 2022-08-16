@@ -29,7 +29,7 @@ public class BroadcastController {
             // ...
 
             // Gửi thông báo cho khách hàng
-            messagingTemplate.convertAndSend("/topic/public", commonPackage);
+            messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdClient(), commonPackage);
         } else if (commonPackage.getStatus().equals("decline")) {
             HandlePackageContext tmp = ServerSocket.getInstance().getHandlePackageContext(commonPackage.getIdHailing());
             tmp.changeState(new ReFindingDriverPackage(tmp));
