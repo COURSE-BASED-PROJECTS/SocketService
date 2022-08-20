@@ -1,8 +1,10 @@
 package com.up.socketservice.utils;
 
+import com.up.socketservice.dto.LocationDto;
 import com.up.socketservice.model.hailing.Location;
 import com.up.socketservice.model.hailing.handle.DriverDistance;
 import com.up.socketservice.model.server.gps.GpsPackage;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,5 +40,22 @@ public class FindUtil {
 
 
         return result;
+    }
+
+    public static Integer findLocationIdByLatLong(double latitude, double longitude) {
+        StringBuilder sb = new StringBuilder("http://localhost:9090/api/location/byLatLong");
+        sb.append("?lat=").append(String.valueOf(latitude)).append("&long=").append(String.valueOf(longitude));
+
+        String url = sb.toString();
+        System.out.println(url);
+
+        RestTemplate restTemplate = new RestTemplate();
+        LocationDto locationDto = restTemplate.getForObject(url, LocationDto.class);
+
+        if (locationDto == null) {
+            return -1;
+        }
+
+        return locationDto.location_id;
     }
 }

@@ -11,7 +11,7 @@ public class CommonPackage {
     private String idClient;
     private HailingPackage hailing;
     private String status;
-    private ArrayList<String> scope;
+    private String scope;
 
 
     public String getIdHailing() {
@@ -54,11 +54,11 @@ public class CommonPackage {
         this.status = status;
     }
 
-    public ArrayList<String> getScope() {
+    public String getScope() {
         return scope;
     }
 
-    public void setScope(ArrayList<String> scope) {
+    public void setScope(String scope) {
         this.scope = scope;
     }
 

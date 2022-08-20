@@ -24,7 +24,7 @@ public class ReFindingDriverPackage extends HandlePackage {
         System.out.println(commonPackage.toString());
 
         // remove selected driver
-        mapDistance.get(commonPackage.getIdHailing()).remove(temp);
+        mapDistance.get(commonPackage.getIdHailing()).stream().filter(l -> !l.getIdDriver().equals(temp.getIdDriver()));
     }
 
     @Override

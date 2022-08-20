@@ -26,7 +26,7 @@ public class FindingDriverPackage extends HandlePackage {
 
         List<DriverDistance> listDriverDistance = CalUtil.GoogleMapDistance(commonPackage.getHailing());
         if (listDriverDistance.isEmpty()) {
-            System.out.println("Không tìm được tài xế!");
+            commonPackage.setStatus("no_driver");
             return;
         }
 
@@ -46,7 +46,7 @@ public class FindingDriverPackage extends HandlePackage {
         commonPackage.setStatus("waiting");
 
         // remove selected driver
-        mapDistance.get(commonPackage.getIdHailing()).remove(temp);
+        mapDistance.get(commonPackage.getIdHailing()).stream().filter(l -> !l.getIdDriver().equals(temp.getIdDriver()));
 
         //System.out.println(commonPackage.toString());
     }

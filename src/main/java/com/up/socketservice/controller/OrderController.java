@@ -32,7 +32,12 @@ public class OrderController {
         tmp.changeState(new FindingDriverPackage(tmp));
         tmp.handle(commonPackage);
 
-        messagingTemplate.convertAndSend("/topic/"+commonPackage.getIdDriver(), commonPackage);
+        if (commonPackage.getStatus().equals("no_driver")) {
+            messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdClient(), commonPackage);
+            return;
+        }
+
+        messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdDriver(), commonPackage);
     }
 
 }
