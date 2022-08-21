@@ -50,12 +50,30 @@ public class FindUtil {
         System.out.println(url);
 
         RestTemplate restTemplate = new RestTemplate();
-        LocationDto locationDto = restTemplate.getForObject(url, LocationDto.class);
-
-        if (locationDto == null) {
+        try {
+            return restTemplate.getForObject(url, LocationDto.class).location_id;
+        } catch (Exception e) {
             return -1;
         }
+    }
 
-        return locationDto.location_id;
+    public static Integer findLocationId(Location location) throws Exception {
+        StringBuilder sb = new StringBuilder("http://localhost:9090/api/location/byLatLong");
+        sb.append("?lat=").append(String.valueOf(location.latitude)).append("&long=").append(String.valueOf(location.longitude));
+
+        String url = sb.toString();
+        System.out.println(url);
+
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            LocationDto  locationDto = restTemplate.getForObject(url, LocationDto.class);
+            locationDto.setCount(locationDto.getCount() + 1);
+
+            return SaveDbUtil.saveLocation(locationDto);
+        } catch (Exception e) {
+            LocationDto locationDto = new LocationDto(null, location.name, 1, location.latitude, location.longitude);
+
+            return SaveDbUtil.saveLocation(locationDto);
+        }
     }
 }
