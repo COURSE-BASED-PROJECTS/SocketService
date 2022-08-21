@@ -15,7 +15,7 @@ public class HailingDto {
 
     public Double cost;
 
-    public LocalDateTime time_start;
+    public String time_start;
 
     public String scope;
 
@@ -30,7 +30,7 @@ public class HailingDto {
     public HailingDto() {
     }
 
-    public HailingDto(Integer hailing_id, String client_id, Integer driver_id, Double distance, Long time_during, Double cost, LocalDateTime time_start, String scope, String status, Integer picking_address, Integer arriving_address, Integer car_type) {
+    public HailingDto(Integer hailing_id, String client_id, Integer driver_id, Double distance, Long time_during, Double cost, String time_start, String scope, String status, Integer picking_address, Integer arriving_address, Integer car_type) {
         this.hailing_id = hailing_id;
         this.client_id = client_id;
         this.driver_id = driver_id;
@@ -69,7 +69,7 @@ public class HailingDto {
         return cost;
     }
 
-    public LocalDateTime getTime_start() {
+    public String getTime_start() {
         return time_start;
     }
 

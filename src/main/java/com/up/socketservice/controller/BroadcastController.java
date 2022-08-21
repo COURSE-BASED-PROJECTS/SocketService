@@ -14,7 +14,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
-
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 public class BroadcastController {
@@ -26,6 +27,36 @@ public class BroadcastController {
     public void handleRequest(@Payload CommonPackage commonPackage) {
 
         if (commonPackage.getStatus().equals("accept")) {
+
+            // Gửi thông báo cho khách hàng
+            System.out.println("accept");
+            System.out.println(commonPackage.toString());
+            commonPackage.setStatus("have_driver");
+            messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdClient(), commonPackage);
+
+            if(commonPackage.getScope().equals("CALLCENTER")){
+                messagingTemplate.convertAndSend("/topic/callcenter", commonPackage);
+            }
+
+        } else if (commonPackage.getStatus().equals("decline")) {
+            HandlePackageContext tmp = ServerSocket.getInstance().getHandlePackageContext(commonPackage.getIdHailing());
+            tmp.changeState(new ReFindingDriverPackage(tmp));
+            tmp.handle(commonPackage);
+
+            messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdDriver(), commonPackage);
+
+            if(commonPackage.getScope().equals("CALLCENTER")){
+                messagingTemplate.convertAndSend("/topic/callcenter", commonPackage);
+            }
+            
+        } else if (commonPackage.getStatus().equals("end")) {
+
+            messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdClient(), commonPackage);
+
+            if(commonPackage.getScope().equals("CALLCENTER")){
+                messagingTemplate.convertAndSend("/topic/callcenter", commonPackage);
+            }
+
             //Gọi service lưu thông tin chuyến đi
             HailingPackage h = commonPackage.getHailing();
             Integer locationStartId = 0;
@@ -37,11 +68,19 @@ public class BroadcastController {
                 System.out.println("Lỗi hàm lưu location");
                 throw new RuntimeException(e);
             }
+            LocalDateTime timeStart = h.getTimeStart();
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+
+// Custom format if needed
+//DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+// Format LocalDateTime
+            String formattedDateTime = timeStart.format(formatter);
 
             HailingDto hailingDto = new HailingDto(null, commonPackage.getIdClient(),
                     Integer.parseInt(commonPackage.getIdDriver()), h.getDistance(),
                     h.getTimeDuring(), commonPackage.getHailing().getCost(),
-                    h.getTimeStart(), commonPackage.getScope(), commonPackage.getStatus(),
+                    formattedDateTime, commonPackage.getScope(), commonPackage.getStatus(),
                     locationStartId, locationEndId, h.getCarType());
 
             try {
@@ -59,18 +98,6 @@ public class BroadcastController {
                 throw new RuntimeException(e);
             }
 
-            // Gửi thông báo cho khách hàng
-            commonPackage.setStatus("have_driver");
-            messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdClient(), commonPackage);
-        } else if (commonPackage.getStatus().equals("decline")) {
-            HandlePackageContext tmp = ServerSocket.getInstance().getHandlePackageContext(commonPackage.getIdHailing());
-            tmp.changeState(new ReFindingDriverPackage(tmp));
-            tmp.handle(commonPackage);
-
-            messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdDriver(), commonPackage);
-        } else if (commonPackage.getStatus().equals("end")) {
-
-            messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdClient(), commonPackage);
         }
     }
 }

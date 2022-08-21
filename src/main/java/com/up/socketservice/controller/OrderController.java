@@ -33,11 +33,21 @@ public class OrderController {
         tmp.handle(commonPackage);
 
         if (commonPackage.getStatus().equals("no_driver")) {
+
             messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdClient(), commonPackage);
+            if(commonPackage.getScope().equals("CALLCENTER")){
+                messagingTemplate.convertAndSend("/topic/callcenter", commonPackage);
+            }
             return;
         }
+        System.out.println("Sau khi tim tai xe");
+        System.out.println(commonPackage.toString());
 
         messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdDriver(), commonPackage);
+
+        if(commonPackage.getScope().equals("CALLCENTER")){
+            messagingTemplate.convertAndSend("/topic/callcenter", commonPackage);
+        }
     }
 
 }

@@ -45,11 +45,11 @@ public class SaveDbUtil {
     }
 
     public static Integer updateDriver(String driverId, Double cost) throws Exception {
-        String uri = "http://localhost:9090/api/driver/1";
+        String uri = "http://localhost:9090/api/driver/" + driverId;
         RestTemplate restTemplate = new RestTemplate();
         DriverDto driverDto = restTemplate.getForObject(uri, DriverDto.class);
 
-        driverDto.setBalance((long) (driverDto.balance + cost));
+        driverDto.setBalance((driverDto.balance + Double.valueOf(cost).longValue()));
         driverDto.setRide_count(driverDto.ride_count + 1);
 
         String postUrl = "http://localhost:9090/api/driver";
