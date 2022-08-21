@@ -44,7 +44,7 @@ public class SaveDbUtil {
         return Integer.parseInt(EntityUtils.toString(response.getEntity()));
     }
 
-    public static Integer updateDriver(String driverId, Double cost) throws Exception {
+    public static void updateDriver(String driverId, Double cost) throws Exception {
         String uri = "http://localhost:9090/api/driver/" + driverId;
         RestTemplate restTemplate = new RestTemplate();
         DriverDto driverDto = restTemplate.getForObject(uri, DriverDto.class);
@@ -62,7 +62,5 @@ public class SaveDbUtil {
 
         HttpResponse response = httpClient.execute(post);
 
-
-        return Integer.parseInt(EntityUtils.toString(response.getEntity()));
     }
 }
