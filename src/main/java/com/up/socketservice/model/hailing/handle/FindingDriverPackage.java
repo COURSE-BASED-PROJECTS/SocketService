@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FindingDriverPackage extends HandlePackage {
     private String name = "Finding Driver";
@@ -46,7 +47,10 @@ public class FindingDriverPackage extends HandlePackage {
         commonPackage.setStatus("waiting");
 
         // remove selected driver
-        mapDistance.get(commonPackage.getIdHailing()).stream().filter(l -> !l.getIdDriver().equals(temp.getIdDriver()));
+        List<DriverDistance> filterList =
+        mapDistance.get(commonPackage.getIdHailing()).stream().filter(l -> !l.getIdDriver().equals(temp.getIdDriver())).collect(Collectors.toList());
+
+        mapDistance.put(commonPackage.getIdHailing(), filterList);
 
         //System.out.println(commonPackage.toString());
     }

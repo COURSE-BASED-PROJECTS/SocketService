@@ -43,12 +43,21 @@ public class BroadcastController {
             tmp.changeState(new ReFindingDriverPackage(tmp));
             tmp.handle(commonPackage);
 
+            if (commonPackage.getStatus().equals("no_driver")) {
+
+                messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdClient(), commonPackage);
+                if(commonPackage.getScope().equals("CALLCENTER")){
+                    messagingTemplate.convertAndSend("/topic/callcenter", commonPackage);
+                }
+                return;
+            }
+
             messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdDriver(), commonPackage);
 
             if(commonPackage.getScope().equals("CALLCENTER")){
                 messagingTemplate.convertAndSend("/topic/callcenter", commonPackage);
             }
-            
+
         } else if (commonPackage.getStatus().equals("end")) {
 
             messagingTemplate.convertAndSend("/topic/" + commonPackage.getIdClient(), commonPackage);
@@ -71,10 +80,7 @@ public class BroadcastController {
             LocalDateTime timeStart = h.getTimeStart();
             DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 
-// Custom format if needed
-//DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-// Format LocalDateTime
+            // Format LocalDateTime
             String formattedDateTime = timeStart.format(formatter);
 
             HailingDto hailingDto = new HailingDto(null, commonPackage.getIdClient(),

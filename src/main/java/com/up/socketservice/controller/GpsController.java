@@ -22,6 +22,6 @@ public class GpsController {
     @MessageMapping("/gps.getGps")
     public void getGps(@Payload GpsPackage gpsPackage) {
         serverGPS.addGPS(gpsPackage);
-        logger.info(gpsPackage.toString());
+//        logger.info(gpsPackage.toString());
     }
 }
